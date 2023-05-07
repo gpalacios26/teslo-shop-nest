@@ -20,7 +20,12 @@ npm install
 docker-compose up -d
 ```
 
-6. Levantar el proyecto par desarrollo
+6. Levantar el proyecto para desarrollo
 ```
 npm run start:dev
+```
+
+7. Ejecutar seed para cargar data de prueba
+```
+http://localhost:3000/api/seed
 ```
