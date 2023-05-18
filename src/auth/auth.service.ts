@@ -30,7 +30,7 @@ export class AuthService {
 
       return {
         ...user,
-        token: this.getJwtToken({ id: user.id, email: user.email })
+        token: this.getJwtToken({ id: user.id })
       };
     } catch (error) {
       this.handleDBErrors(error);
@@ -38,27 +38,30 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto) {
-    try {
-      const { password, email } = loginUserDto;
+    const { password, email } = loginUserDto;
 
-      const user = await this.userRepository.findOne({
-        where: { email },
-        select: { email: true, password: true, id: true }
-      });
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: { email: true, password: true, id: true }
+    });
 
-      if (!user)
-        throw new UnauthorizedException('Credentials are not valid (email)');
+    if (!user)
+      throw new UnauthorizedException('Credentials are not valid (email)');
 
-      if (!bcrypt.compareSync(password, user.password))
-        throw new UnauthorizedException('Credentials are not valid (password)');
+    if (!bcrypt.compareSync(password, user.password))
+      throw new UnauthorizedException('Credentials are not valid (password)');
 
-      return {
-        ...user,
-        token: this.getJwtToken({ id: user.id, email: user.email })
-      };
-    } catch (error) {
-      this.handleDBErrors(error);
-    }
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id })
+    };
+  }
+
+  async checkAuthStatus(user: User) {
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id })
+    };
   }
 
   private getJwtToken(payload: JwtPayload) {
