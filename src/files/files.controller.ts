@@ -1,11 +1,13 @@
 import { Controller, Get, Res, Param, Post, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { diskStorage } from 'multer';
 import { FilesService } from './files.service';
 import { fileFilter, fileNamer } from './helper';
 
+@ApiTags('Files - Get and Upload')
 @Controller('files')
 export class FilesController {
   constructor(
@@ -23,6 +25,7 @@ export class FilesController {
   }
 
   @Post('product')
+  @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file', {
     fileFilter: fileFilter,
     storage: diskStorage({
